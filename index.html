@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foundation Shade Finder</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Foundation Shade Finder</h1>
+            <p>Upload your photo to find your perfect foundation match</p>
+        </header>
+        
+        <main>
+            <div class="upload-section">
+                <div class="upload-area" id="dropArea">
+                    <p>Drag and drop your photo here or</p>
+                    <label for="fileInput" class="upload-btn">Choose File</label>
+                    <input type="file" id="fileInput" accept="image/*" hidden>
+                </div>
+                <div class="preview-container">
+                    <img id="imagePreview" alt="Preview" hidden>
+                </div>
+                <button id="analyzeBtn" disabled>Analyze Face</button>
+            </div>
+            
+            <div class="results-section" hidden id="resultsSection">
+                <h2>Your Results</h2>
+                <div class="analysis-results">
+                    <div class="skin-tone">
+                        <h3>Detected Skin Tone</h3>
+                        <div id="skinToneDisplay" class="color-display"></div>
+                        <p id="skinToneDescription"></p>
+                    </div>
+                    <div class="undertone">
+                        <h3>Undertone</h3>
+                        <p id="undertoneValue"></p>
+                    </div>
+                </div>
+                <div class="recommendations">
+                    <h3>Recommended Foundation Shades</h3>
+                    <div id="recommendationsList" class="recommendations-list"></div>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>© 2025 Foundation Shade Finder | Privacy Policy</p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.20.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/face-landmarks-detection@1.0.2"></script>
+    <script src="app.js"></script>
+</body>
+</html>
