@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Foundation Shade Finder</title>
+    <link rel="icon" href="../companion.ico" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -14,7 +15,14 @@
         .container {
             max-width: 800px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 1rem;
+        }
+        
+        /* Responsive container padding */
+        @media (min-width: 768px) {
+            .container {
+                padding: 2rem;
+            }
         }
         .header {
             text-align: center;
@@ -90,6 +98,40 @@
             margin-right: 1rem;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
+        .comparison-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 1rem;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .comparison-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 1rem;
+        }
+        .comparison-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .comparison-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #6a4c93;
+        }
+        .arrow-icon {
+            font-size: 1.5rem;
+            color: #8ac6d1;
+            margin: 0 1rem;
+        }
         .skin-info {
             display: flex;
             flex-direction: column;
@@ -101,14 +143,22 @@
         .foundation-card {
             display: flex;
             align-items: center;
-            padding: 1rem;
+            padding: 0.75rem;
             border-radius: 8px;
             background-color: #f8f9fa;
             margin-bottom: 1rem;
             transition: transform 0.3s ease;
+            flex-wrap: wrap;
         }
         .foundation-card:hover {
             transform: translateY(-3px);
+        }
+        
+        @media (min-width: 576px) {
+            .foundation-card {
+                padding: 1rem;
+                flex-wrap: nowrap;
+            }
         }
         .foundation-color {
             width: 50px;
@@ -124,6 +174,89 @@
             padding: 0.2rem 0.5rem;
             border-radius: 12px;
             margin-left: 0.5rem;
+        }
+        .compare-btn {
+            background: none;
+            border: none;
+            color: #6a4c93;
+            font-size: 0.9rem;
+            cursor: pointer;
+            padding: 0.2rem 0.5rem;
+            margin-left: 0.5rem;
+        }
+        .compare-btn:hover {
+            text-decoration: underline;
+        }
+        .comparison-view {
+            display: none;
+            background-color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-top: 2rem;
+        }
+        .comparison-view h3 {
+            color: #6a4c93;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .comparison-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+        }
+        .comparison-item {
+            width: 120px;
+            text-align: center;
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        
+        @media (min-width: 576px) {
+            .comparison-grid {
+                gap: 1.5rem;
+            }
+            .comparison-item {
+                width: 150px;
+            }
+        }
+        .comparison-color {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .comparison-info {
+            font-size: 0.9rem;
+        }
+        .comparison-brand {
+            font-weight: bold;
+            margin-bottom: 0.2rem;
+        }
+        .comparison-shade {
+            margin-bottom: 0.2rem;
+        }
+        .comparison-undertone {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        .remove-comparison {
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .loading {
             display: none;
@@ -156,6 +289,39 @@
             text-align: center;
             margin: 1rem 0;
             display: none;
+        }
+        
+        /* Virtual Try-On Styles */
+        .try-on-section {
+            background-color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-top: 2rem;
+            display: none;
+        }
+        .try-on-section h3 {
+            color: #6a4c93;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .try-on-image {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 0 auto;
+            display: block;
+        }
+        .try-on-btn {
+            background-color: #8ac6d1;
+            border-color: #8ac6d1;
+            color: #333;
+            margin-top: 1rem;
+        }
+        .try-on-btn:hover {
+            background-color: #6db5c3;
+            border-color: #6db5c3;
+            color: #333;
         }
     </style>
 </head>
@@ -217,23 +383,111 @@
                 </div>
             </div>
             
+            <div id="comparisonContainer" class="comparison-container" style="display: none;">
+                <div class="comparison-item">
+                    <div class="comparison-circle" id="originalShadeColor"></div>
+                    <div class="comparison-label">Original</div>
+                </div>
+                <div class="arrow-icon">→</div>
+                <div class="comparison-item">
+                    <div class="comparison-circle" id="adjustedShadeColor"></div>
+                    <div class="comparison-label">Adjusted</div>
+                </div>
+            </div>
+            
+            <div class="comparison-view" id="comparisonView" style="display: none;">
+                <h3>Compare Foundation Shades</h3>
+                <div class="comparison-grid" id="comparisonGrid">
+                    <!-- Comparison items will be added here dynamically -->
+                </div>
+                <div class="text-center mt-4">
+                    <button id="clearComparisonBtn" class="btn btn-secondary">Clear All</button>
+                </div>
+            </div>
             <div class="recommendations">
                 <h3>Recommended Foundation Shades</h3>
                 <div id="recommendationsList"></div>
             </div>
             
+            <div class="mt-4 text-center adjustment-buttons">
+                <div class="d-flex flex-wrap justify-content-center gap-2">
+                    <button id="adjustLighterBtn" class="btn btn-sm btn-secondary">A Touch Lighter</button>
+                    <button id="adjustDarkerBtn" class="btn btn-sm btn-secondary">A Touch Deeper</button>
+                    <button id="adjustNeutralBtn" class="btn btn-sm btn-secondary">Try Neutral</button>
+                    <button id="adjustWarmBtn" class="btn btn-sm btn-secondary">Try Warm</button>
+                    <button id="adjustCoolBtn" class="btn btn-sm btn-secondary">Try Cool</button>
+                </div>
+            </div>
+            
+            <div class="mt-4 p-2 p-sm-3 bg-light rounded" id="fineAdjustmentControls" style="display: none;">
+                <h5 class="mb-3 text-center">Fine-Tune Your Shade</h5>
+            
+                <div class="mb-3">
+                    <label for="lightnessSlider" class="form-label">Lightness</label>
+                    <div class="d-flex align-items-center">
+                        <span class="me-1 me-sm-2 small">Deeper</span>
+                        <input type="range" class="form-range flex-grow-1" id="lightnessSlider" min="-10" max="10" value="0">
+                        <span class="ms-1 ms-sm-2 small">Lighter</span>
+                    </div>
+                </div>
+            
+                <div class="mb-3">
+                    <label for="warmthSlider" class="form-label">Warmth</label>
+                    <div class="d-flex align-items-center">
+                        <span class="me-1 me-sm-2 small">Cool</span>
+                        <input type="range" class="form-range flex-grow-1" id="warmthSlider" min="-10" max="10" value="0">
+                        <span class="ms-1 ms-sm-2 small">Warm</span>
+                    </div>
+                </div>
+            
+                <div class="mb-3">
+                    <label for="saturationSlider" class="form-label">Saturation</label>
+                    <div class="d-flex align-items-center">
+                        <span class="me-1 me-sm-2 small">Neutral</span>
+                        <input type="range" class="form-range flex-grow-1" id="saturationSlider" min="-10" max="10" value="0">
+                        <span class="ms-1 ms-sm-2 small">Vibrant</span>
+                    </div>
+                </div>
+            
+                <div class="text-center mt-3">
+                    <div class="d-flex flex-column flex-sm-row justify-content-center gap-2">
+                        <button id="applyFineAdjustmentsBtn" class="btn btn-primary">Apply Adjustments</button>
+                        <button id="resetSlidersBtn" class="btn btn-secondary">Reset Sliders</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-3 text-center">
+                <button id="toggleFineAdjustBtn" class="btn btn-link">Show Fine Adjustment Controls</button>
+            </div>
+            
+            <!-- Try-On Button -->
             <div class="mt-4 text-center">
-                <button id="adjustLighterBtn" class="btn btn-sm btn-secondary me-1">A Touch Lighter</button>
-                <button id="adjustDarkerBtn" class="btn btn-sm btn-secondary me-1">A Touch Deeper</button>
-                <button id="adjustNeutralBtn" class="btn btn-sm btn-secondary me-1">Try Neutral</button>
-                <button id="adjustWarmBtn" class="btn btn-sm btn-secondary me-1">Try Warm</button>
-                <button id="adjustCoolBtn" class="btn btn-sm btn-secondary">Try Cool</button>
+                <button id="tryOnBtn" class="btn btn-secondary try-on-btn">Virtual Try-On</button>
+                </div>
+                
+                <!-- Virtual Try-On Section -->
+                <div class="try-on-section" id="tryOnSection">
+                    <h3>Virtual Foundation Try-On</h3>
+                    <div class="text-center">
+                        <img id="tryOnImage" class="try-on-image" alt="Virtual Try-On">
+                        <p class="mt-3">This is a simplified visualization of how the foundation shade might look on your skin.</p>
+                    </div>
             </div>
         </div>
     </div>
 
     <script>
         // DOM Elements
+            // Try-on elements
+            const tryOnBtn = document.getElementById('tryOnBtn');
+            const tryOnSection = document.getElementById('tryOnSection');
+            const tryOnImage = document.getElementById('tryOnImage');
+
+            // Comparison view elements
+            const comparisonView = document.getElementById('comparisonView');
+            const comparisonGrid = document.getElementById('comparisonGrid');
+            const clearComparisonBtn = document.getElementById('clearComparisonBtn');
         const fileInput = document.getElementById('fileInput');
         const uploadBtn = document.getElementById('uploadBtn');
         const cameraBtn = document.getElementById('cameraBtn');
@@ -259,10 +513,24 @@
         const adjustWarmBtn = document.getElementById('adjustWarmBtn');
         const adjustCoolBtn = document.getElementById('adjustCoolBtn');
         
+            // Fine adjustment controls
+            const fineAdjustmentControls = document.getElementById('fineAdjustmentControls');
+            const toggleFineAdjustBtn = document.getElementById('toggleFineAdjustBtn');
+            const lightnessSlider = document.getElementById('lightnessSlider');
+            const warmthSlider = document.getElementById('warmthSlider');
+            const saturationSlider = document.getElementById('saturationSlider');
+            const applyFineAdjustmentsBtn = document.getElementById('applyFineAdjustmentsBtn');
+            const resetSlidersBtn = document.getElementById('resetSlidersBtn');
+        
         // Variables
         let selectedImage = null;
         let stream = null;
         let currentResults = null;
+            let originalResults = null;
+            let comparisonItems = []; // Store comparison items
+            const comparisonContainer = document.getElementById('comparisonContainer');
+            const originalShadeColor = document.getElementById('originalShadeColor');
+            const adjustedShadeColor = document.getElementById('adjustedShadeColor');
         
         // Event Listeners
         uploadBtn.addEventListener('click', () => fileInput.click());
@@ -271,6 +539,10 @@
         captureBtn.addEventListener('click', capturePhoto);
         analyzeBtn.addEventListener('click', analyzeFace);
         resetBtn.addEventListener('click', resetUI);
+        clearComparisonBtn.addEventListener('click', clearComparison);
+        
+        // Try-on button
+        tryOnBtn.addEventListener('click', performTryOn);
         
         // Adjustment buttons
         adjustLighterBtn.addEventListener('click', () => adjustResults('lighter'));
@@ -278,6 +550,43 @@
         adjustNeutralBtn.addEventListener('click', () => adjustResults('neutral'));
         adjustWarmBtn.addEventListener('click', () => adjustResults('warm'));
         adjustCoolBtn.addEventListener('click', () => adjustResults('cool'));
+        
+            // Fine adjustment controls
+            toggleFineAdjustBtn.addEventListener('click', toggleFineAdjustmentControls);
+            applyFineAdjustmentsBtn.addEventListener('click', applyFineAdjustments);
+            resetSlidersBtn.addEventListener('click', resetSliders);
+
+            // Toggle fine adjustment controls
+            function toggleFineAdjustmentControls() {
+                if (fineAdjustmentControls.style.display === 'none' || fineAdjustmentControls.style.display === '') {
+                    fineAdjustmentControls.style.display = 'block';
+                    toggleFineAdjustBtn.textContent = 'Hide Fine Adjustment Controls';
+                } else {
+                    fineAdjustmentControls.style.display = 'none';
+                    toggleFineAdjustBtn.textContent = 'Show Fine Adjustment Controls';
+                }
+            }
+
+            // Reset sliders to default values
+            function resetSliders() {
+                lightnessSlider.value = 0;
+                warmthSlider.value = 0;
+                saturationSlider.value = 0;
+            }
+
+            // Apply fine adjustments
+            function applyFineAdjustments() {
+                if (!currentResults) {
+                    showError('No analysis results to adjust. Please analyze an image first.');
+                    return;
+                }
+
+                const lightness = parseInt(lightnessSlider.value);
+                const warmth = parseInt(warmthSlider.value);
+                const saturation = parseInt(saturationSlider.value);
+
+                adjustResults('fine', { lightness, warmth, saturation });
+            }
         
         // Handle file selection
         function handleFileSelect(event) {
@@ -365,7 +674,11 @@
                 
                 const data = await response.json();
                 currentResults = data;
+                originalResults = JSON.parse(JSON.stringify(data)); // Store a deep copy of the original results
                 displayResults(data);
+                
+                // Reset comparison container when analyzing a new face
+                comparisonContainer.style.display = 'none';
                 
             } catch (error) {
                 showError(error.message || 'Error analyzing face. Please try again with a clearer photo.');
@@ -388,44 +701,66 @@
             
             // Display recommendations
             recommendationsList.innerHTML = '';
-            data.recommendations.forEach(rec => {
-                const card = document.createElement('div');
-                card.className = 'foundation-card';
-                
-                // Convert LAB to hex for display
-                const recColor = document.createElement('div');
-                recColor.className = 'foundation-color';
-                
-                // Use the brand's color if available, otherwise use a placeholder
-                recColor.style.backgroundColor = '#D8B390'; // Placeholder color
-                
-                const recInfo = document.createElement('div');
-                recInfo.className = 'foundation-info';
-                
-                const brandName = document.createElement('strong');
-                brandName.textContent = rec.brand;
-                
-                const shadeName = document.createElement('span');
-                shadeName.textContent = ` ${rec.shade}`;
-                
-                const undertoneTag = document.createElement('span');
-                undertoneTag.className = 'undertone-tag';
-                undertoneTag.textContent = capitalizeFirstLetter(rec.undertone);
-                
-                const deltaE = document.createElement('div');
-                deltaE.className = 'small text-muted';
-                deltaE.textContent = `Match score: ${(100 - rec.deltaE * 10).toFixed(0)}%`;
-                
-                recInfo.appendChild(brandName);
-                recInfo.appendChild(shadeName);
-                recInfo.appendChild(undertoneTag);
-                recInfo.appendChild(deltaE);
-                
-                card.appendChild(recColor);
-                card.appendChild(recInfo);
-                
-                recommendationsList.appendChild(card);
+            // Filter recommendations to only show those with positive match scores
+            const validRecommendations = data.recommendations.filter(rec => {
+                const matchScore = (100 - rec.deltaE * 10);
+                return matchScore > 0;
             });
+            
+            if (validRecommendations.length === 0) {
+                const noMatchMessage = document.createElement('div');
+                noMatchMessage.className = 'alert alert-info';
+                noMatchMessage.textContent = 'No foundation shades with positive match scores found. Try adjusting the lighting or taking another photo.';
+                recommendationsList.appendChild(noMatchMessage);
+            } else {
+                validRecommendations.forEach(rec => {
+                    const matchScore = (100 - rec.deltaE * 10).toFixed(0);
+                    
+                    const card = document.createElement('div');
+                    card.className = 'foundation-card';
+                    
+                    // Convert LAB to hex for display
+                    const recColor = document.createElement('div');
+                    recColor.className = 'foundation-color';
+                    
+                    // Use the brand's color if available, otherwise use a placeholder
+                    recColor.style.backgroundColor = '#D8B390'; // Placeholder color
+                    
+                    const recInfo = document.createElement('div');
+                    recInfo.className = 'foundation-info';
+                    
+                    const brandName = document.createElement('strong');
+                    brandName.textContent = rec.brand;
+                    
+                    const shadeName = document.createElement('span');
+                    shadeName.textContent = ` ${rec.shade}`;
+                    
+                    const undertoneTag = document.createElement('span');
+                    undertoneTag.className = 'undertone-tag';
+                    undertoneTag.textContent = capitalizeFirstLetter(rec.undertone);
+                    
+                    const deltaE = document.createElement('div');
+                    deltaE.className = 'small text-muted';
+                    deltaE.textContent = `Match score: ${matchScore}%`;
+                    
+                    // Add compare button
+                    const compareBtn = document.createElement('button');
+                    compareBtn.className = 'compare-btn';
+                    compareBtn.textContent = 'Compare';
+                    compareBtn.addEventListener('click', () => addToComparison(rec));
+                    
+                    recInfo.appendChild(brandName);
+                    recInfo.appendChild(shadeName);
+                    recInfo.appendChild(undertoneTag);
+                    recInfo.appendChild(deltaE);
+                    recInfo.appendChild(compareBtn);
+                    
+                    card.appendChild(recColor);
+                    card.appendChild(recInfo);
+                    
+                    recommendationsList.appendChild(card);
+                });
+            }
             
             // Show results section
             resultsSection.style.display = 'block';
@@ -433,10 +768,207 @@
         }
         
         // Adjust results based on user feedback
-        function adjustResults(adjustment) {
-            // In a real implementation, this would send the adjustment to the server
-            // For now, we'll just show a message
-            alert(`Adjustment '${adjustment}' would be sent to the server in a real implementation.`);
+            async function adjustResults(adjustment, fineAdjustments = null) {
+                if (!currentResults) {
+                    showError('No analysis results to adjust. Please analyze an image first.');
+                    return;
+                }
+
+                // Show loading indicator
+                loadingIndicator.style.display = 'block';
+                errorMessage.style.display = 'none';
+
+                try {
+                    const requestData = {
+                        user_lab: currentResults.user_lab,
+                        undertone: currentResults.undertone,
+                        adjustment: adjustment
+                    };
+
+                    // Add fine adjustment parameters if provided
+                    if (adjustment === 'fine' && fineAdjustments) {
+                        requestData.fine_adjustments = fineAdjustments;
+                    }
+
+                    const response = await fetch('/adjust', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(requestData)
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || 'Failed to adjust shade');
+                    }
+
+                    const data = await response.json();
+                    currentResults = data; // Update current results with adjusted values
+                    displayResults(data);
+
+                    // Update comparison display
+                    if (originalResults) {
+                        // Show original shade
+                        const [origL, origA, origB] = originalResults.user_lab;
+                        originalShadeColor.style.backgroundColor = labToHex(origL, origA, origB);
+
+                        // Show adjusted shade
+                        const [adjL, adjA, adjB] = data.user_lab;
+                        adjustedShadeColor.style.backgroundColor = labToHex(adjL, adjA, adjB);
+
+                        // Show comparison container
+                        comparisonContainer.style.display = 'flex';
+                    }
+
+                } catch (error) {
+                    showError(error.message || 'Error adjusting shade. Please try again.');
+                    console.error('Error adjusting shade:', error);
+                } finally {
+                    loadingIndicator.style.display = 'none';
+                }
+            }
+            
+            // Virtual Try-On function
+            async function performTryOn() {
+                if (!currentResults) {
+                    showError('No analysis results to try on. Please analyze an image first.');
+                    return;
+                }
+                
+                // Show loading indicator
+                loadingIndicator.style.display = 'block';
+                errorMessage.style.display = 'none';
+                
+                try {
+                    const requestData = {
+                        user_lab: currentResults.user_lab,
+                        undertone: currentResults.undertone,
+                        adjustment: "none"  // No adjustment for try-on
+                    };
+                    
+                    const response = await fetch('/try-on', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(requestData)
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || 'Failed to generate try-on image');
+                    }
+                    
+                    const data = await response.json();
+                    
+                    // Display the try-on image
+                    tryOnImage.src = data.try_on_image;
+                    tryOnSection.style.display = 'block';
+                    tryOnSection.scrollIntoView({ behavior: 'smooth' });
+                    
+                } catch (error) {
+                    showError(error.message || 'Error generating try-on image. Please try again.');
+                    console.error('Error generating try-on image:', error);
+                } finally {
+                    loadingIndicator.style.display = 'none';
+                }
+            }
+            
+            // Comparison feature functions
+            function addToComparison(foundation) {
+                // Check if already in comparison
+                const existingIndex = comparisonItems.findIndex(item =>
+                    item.brand === foundation.brand && item.shade === foundation.shade);
+
+                if (existingIndex !== -1) {
+                    showError('This foundation is already in your comparison.');
+                    return;
+                }
+
+                // Add to comparison array
+                comparisonItems.push(foundation);
+
+                // Update comparison view
+                updateComparisonView();
+
+                // Show comparison view if it's the first item
+                if (comparisonItems.length === 1) {
+                    comparisonView.style.display = 'block';
+                }
+            }
+
+            function removeFromComparison(index) {
+                // Remove from array
+                comparisonItems.splice(index, 1);
+
+                // Update comparison view
+                updateComparisonView();
+
+                // Hide comparison view if empty
+                if (comparisonItems.length === 0) {
+                    comparisonView.style.display = 'none';
+                }
+            }
+
+            function clearComparison() {
+                // Clear array
+                comparisonItems = [];
+
+                // Clear comparison grid
+                comparisonGrid.innerHTML = '';
+
+                // Hide comparison view
+                comparisonView.style.display = 'none';
+            }
+
+            function updateComparisonView() {
+                // Clear comparison grid
+                comparisonGrid.innerHTML = '';
+
+                // Add each foundation to the grid
+                comparisonItems.forEach((foundation, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'comparison-item';
+
+                    // Color circle
+                    const colorCircle = document.createElement('div');
+                    colorCircle.className = 'comparison-color';
+                    colorCircle.style.backgroundColor = '#D8B390'; // Placeholder color
+
+                    // Info
+                    const info = document.createElement('div');
+                    info.className = 'comparison-info';
+
+                    const brand = document.createElement('div');
+                    brand.className = 'comparison-brand';
+                    brand.textContent = foundation.brand;
+
+                    const shade = document.createElement('div');
+                    shade.className = 'comparison-shade';
+                    shade.textContent = foundation.shade;
+
+                    const undertone = document.createElement('div');
+                    undertone.className = 'comparison-undertone';
+                    undertone.textContent = capitalizeFirstLetter(foundation.undertone);
+
+                    // Remove button
+                    const removeBtn = document.createElement('button');
+                    removeBtn.className = 'remove-comparison';
+                    removeBtn.textContent = '×';
+                    removeBtn.addEventListener('click', () => removeFromComparison(index));
+
+                    // Assemble
+                    info.appendChild(brand);
+                    info.appendChild(shade);
+                    info.appendChild(undertone);
+
+                    item.appendChild(colorCircle);
+                    item.appendChild(info);
+                    item.appendChild(removeBtn);
+
+                    comparisonGrid.appendChild(item);
+                });
         }
         
         // Reset UI
@@ -446,6 +978,15 @@
             previewContainer.style.display = 'none';
             resultsSection.style.display = 'none';
             errorMessage.style.display = 'none';
+            comparisonContainer.style.display = 'none';
+            comparisonView.style.display = 'none';
+            fineAdjustmentControls.style.display = 'none';
+            tryOnSection.style.display = 'none';
+            toggleFineAdjustBtn.textContent = 'Show Fine Adjustment Controls';
+            resetSliders();
+            clearComparison();
+            originalResults = null;
+            currentResults = null;
             fileInput.value = '';
         }
         
@@ -468,14 +1009,38 @@
             return rgbToHex(rgb.r, rgb.g, rgb.b);
         }
         
-        // Simplified LAB to RGB conversion
-        function labToRgb(L, a, b) {
-            // This is a placeholder - not accurate
-            // In a real implementation, use a proper color conversion library
+            // Accurate LAB to RGB conversion
+            function labToRgb(L, a, b_value) {
+                // LAB to XYZ
+                let y = (L + 16) / 116;
+                let x = a / 500 + y;
+                let z = y - b_value / 200;
+
+                // Apply cube root transformation
+                x = x > 0.206893034 ? Math.pow(x, 3) : (x - 16 / 116) / 7.787;
+                y = y > 0.206893034 ? Math.pow(y, 3) : (y - 16 / 116) / 7.787;
+                z = z > 0.206893034 ? Math.pow(z, 3) : (z - 16 / 116) / 7.787;
+
+                // Use D65 white point
+                x = x * 0.95047;
+                y = y * 1.0;
+                z = z * 1.08883;
+
+                // XYZ to RGB (sRGB)
+                let r = x * 3.2406 + y * -1.5372 + z * -0.4986;
+                let g = x * -0.9689 + y * 1.8758 + z * 0.0415;
+                let blue = x * 0.0557 + y * -0.2040 + z * 1.0570;
+
+                // Apply gamma correction
+                r = r > 0.0031308 ? 1.055 * Math.pow(r, 1 / 2.4) - 0.055 : 12.92 * r;
+                g = g > 0.0031308 ? 1.055 * Math.pow(g, 1 / 2.4) - 0.055 : 12.92 * g;
+                blue = blue > 0.0031308 ? 1.055 * Math.pow(blue, 1 / 2.4) - 0.055 : 12.92 * blue;
+
+            // Convert to 0-255 range and clamp
             return {
-                r: Math.min(255, Math.max(0, Math.round(L * 2.55 + a))),
-                g: Math.min(255, Math.max(0, Math.round(L * 2.55))),
-                b: Math.min(255, Math.max(0, Math.round(L * 2.55 - b)))
+                r: Math.min(255, Math.max(0, Math.round(r * 255))),
+                g: Math.min(255, Math.max(0, Math.round(g * 255))),
+                b: Math.min(255, Math.max(0, Math.round(blue * 255)))
             };
         }
         

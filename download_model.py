@@ -15,16 +15,21 @@ def download_file(url, filename):
 
 def main():
     # URL for the face detection model
+    # Note: The original model is not FP16, but we're keeping the FP16 filename for compatibility
     model_url = "https://github.com/opencv/opencv_3rdparty/raw/dnn_samples_face_detector_20170830/res10_300x300_ssd_iter_140000.caffemodel"
     model_filename = "res10_300x300_ssd_iter_140000_fp16.caffemodel"
     
     # Check if the model file already exists
     if os.path.exists(model_filename):
-        print(f"Model file {model_filename} already exists.")
-        overwrite = input("Do you want to download it again? (y/n): ")
-        if overwrite.lower() != 'y':
-            print("Download canceled.")
-            return
+        file_size = os.path.getsize(model_filename)
+        if file_size > 0:
+            print(f"Model file {model_filename} already exists ({file_size/1024/1024:.2f} MB).")
+            overwrite = input("Do you want to download it again? (y/n): ")
+            if overwrite.lower() != 'y':
+                print("Download canceled.")
+                return
+        else:
+            print(f"Model file {model_filename} exists but is empty. Will download again.")
     
     # Download the model file
     success = download_file(model_url, model_filename)
