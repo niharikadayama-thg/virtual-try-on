@@ -10,6 +10,10 @@ from colormath.color_objects import LabColor
 from colormath.color_diff import delta_e_cie2000
 import json
 
+# Monkey patch numpy to add back the removed asscalar function
+if not hasattr(np, 'asscalar'):
+    np.asscalar = lambda array: array.item()
+
 app = FastAPI()
 
 # Enable CORS for frontend
@@ -57,7 +61,11 @@ def undertone_from_lab(lab_pixels):
 def deltaE2000(lab1, lab2):
     c1 = LabColor(lab_l=lab1[0], lab_a=lab1[1], lab_b=lab1[2])
     c2 = LabColor(lab_l=lab2[0], lab_a=lab2[1], lab_b=lab2[2])
-    return delta_e_cie2000(c1, c2)
+    result = delta_e_cie2000(c1, c2)
+    # Handle numpy array result without using deprecated asscalar
+    if hasattr(result, 'item'):
+        return result.item()
+    return float(result)
 
 # quick-and-dirty cheek masks (rects) centered on face box
 def cheek_regions(box, H, W):
